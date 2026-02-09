@@ -12,8 +12,8 @@ camera.position.z = 5
 
 // Initializing the object
 
-const SphereGeometry = new THREE.SphereGeometry(2,64,64)
-const SphereMaterial = new THREE.MeshBasicMaterial({color:"yellow"})
+const SphereGeometry = new THREE.SphereGeometry(1,32,32)
+const SphereMaterial = new THREE.MeshBasicMaterial({color:"white"})
 
 const SphereMesh = new THREE.Mesh(SphereGeometry,SphereMaterial)
 scene.add(SphereMesh)
