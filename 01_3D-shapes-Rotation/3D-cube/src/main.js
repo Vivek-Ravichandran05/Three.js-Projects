@@ -8,7 +8,7 @@ const scene = new THREE.Scene()
 // Adding Objects to the scene
 
 const cubeGeometry = new THREE.BoxGeometry(2,2,2)
-const cubeMaterial = new THREE.MeshBasicMaterial({color:"yellow"})
+const cubeMaterial = new THREE.MeshBasicMaterial({color:"yellow",side:THREE.DoubleSide})
 
 const cubeMesh = new THREE.Mesh(cubeGeometry,cubeMaterial)
 scene.add(cubeMesh)
