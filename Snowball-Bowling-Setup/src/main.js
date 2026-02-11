@@ -39,7 +39,8 @@ scene.add(ambientlight)
 // Directional Light(main light source)
 
 const directionlight = new THREE.DirectionalLight(0xffffff,0.8)
-directionlight.position.set(5,10,5)
+directionlight.position.set(0,20,15)
+directionlight.target.position.set(0,0,-15)
 directionlight.castShadow = true
 scene.add(directionlight)
 
@@ -84,7 +85,7 @@ CreatePin(1.2,-15)
 // -------------------- Camera --------------------
 
 const camera = new THREE.PerspectiveCamera(50,window.innerWidth/window.innerHeight,0.1,50)
-camera.position.set(0,1,10)
+camera.position.set(0,1,12)
 camera.lookAt(0,0.5,-10)
 
 // -------------------- Renderer --------------------
@@ -103,12 +104,87 @@ window.addEventListener("resize",() => {
     renderer.setSize(window.innerWidth,window.innerHeight)
 })
 
-// -------------------- Animation Loop --------------------
+// -------------------- Speed Controls --------------------
+
+let isDragging = false                                      // Setting mouse dragging as false                                           
+
+const raycaster = new THREE.Raycaster()                     //
+const mouse = new THREE.Vector2()
+
+let startZ = 6
+let startY = -0.6
+let maxDrag = 3
+
+let launchSpeed = 0
+let islaunched = false
+
+window.addEventListener("mousedown",(event) =>{
+    mouse.x = (event.clientX/window.innerWidth) * 2 - 1
+    mouse.y = -(event.clientY/window.innerHeight) * 2 + 1
+
+    raycaster.setFromCamera(mouse,camera)
+
+    const intersects = raycaster.intersectObject(Ball)
+
+    if (intersects.length > 0){
+        isDragging = true
+    }
+})
+
+window.addEventListener("mousemove",(event)=>{
+    if (!isDragging) return
+
+    let dragAmount = event.movementY * 0.02
+
+    Ball.position.z += dragAmount
+
+    if (Ball.position.z > startZ + maxDrag){
+        Ball.position.z = maxDrag + startZ
+    }
+    if (Ball.position.z < startZ){
+        Ball.position.z = startZ
+    }
+})
+
+window.addEventListener("mouseup",()=>{
+    if (!isDragging) return
+
+    isDragging = false
+
+    let dragDistance = Ball.position.z - startZ
+    launchSpeed = dragDistance * 0.2
+    islaunched = true
+})
+
+function resetBall(){
+    Ball.position.set(0,startY,startZ)
+    launchSpeed = 0
+    islaunched = false
+}
+
 
 function animate(){
-    Ball.rotation.x -= 0.05; 
-    Ball.position.z -= 0.05;
+
+    if (islaunched){
     
+        Ball.position.z -= launchSpeed
+
+        launchSpeed *= 0.99
+    
+        if (launchSpeed <= 0.001){
+            
+            launchSpeed = 0
+            islaunched = false
+            setTimeout(resetBall,800)
+        }
+    }
+
+    if (Ball.position.z < -16){
+
+        launchSpeed = 0
+        islaunched = false
+        setTimeout(resetBall,800)
+    }
     renderer.render(scene,camera)
     requestAnimationFrame(animate)
 }
