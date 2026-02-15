@@ -14,13 +14,25 @@ const cubeMesh = new THREE.Mesh(cubeGeometry,cubeMaterial)
 scene.add(cubeMesh)
 
 // Initializing the camera
+// Perspective Camera
+//const camera = new THREE.PerspectiveCamera(50,
+    //window.innerWidth/window.innerHeight,
+    //0.1,
+    //35)
+//camera.position.z = 5
 
-const camera = new THREE.PerspectiveCamera(50,
-    window.innerWidth/window.innerHeight,
+// Orthographic Camera
+const aspect = window.innerWidth/window.innerHeight
+const camera = new THREE.OrthographicCamera(
+    -3*aspect,
+    3*aspect,
+    3,
+    -3,
     0.1,
-    35)
-camera.position.z = 5
+    100
+) 
 
+camera.position.z = 5
 
 // Initializing the render
 
